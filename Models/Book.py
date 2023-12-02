@@ -1,12 +1,11 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, Text, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
-Base = declarative_base()
+from .Base import Base
 
 
 class Book(Base):
-    __tablename__ = 'Books'
+    __tablename__ = 'books'
 
     book_id = Column(Integer, primary_key=True)
     isbn = Column(Integer)
