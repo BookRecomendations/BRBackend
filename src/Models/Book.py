@@ -1,7 +1,10 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Text
 from sqlalchemy.orm import relationship
 
-from .Base import Base
+from src.database import Base
+
+
+# from .Base import Base
 
 
 class Book(Base):

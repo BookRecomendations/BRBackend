@@ -1,6 +1,9 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, Text, ForeignKey
-from sqlalchemy.orm import relationship
-from .Base import Base
+from sqlalchemy import Column, Integer, ForeignKey
+
+from src.database import Base
+
+
+# from .Base import Base
 
 
 class SimilarBook(Base):
