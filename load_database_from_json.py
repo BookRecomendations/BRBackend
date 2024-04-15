@@ -4,9 +4,8 @@ import os
 import asyncio
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
-from Models.Base import Base  # upewnij się, że Base jest zaimportowane poprawnie
-from Models.Book import Book
-from Models.SimilarBook import SimilarBook
+from src.models.Base import Base  # upewnij się, że Base jest zaimportowane poprawnie
+from src.models.Book import Book
 
 # Konfiguracja połączenia z bazą danych
 DATABASE_URL = 'postgresql+asyncpg://postgres:postgres@localhost/BookRecommendation'
@@ -16,6 +15,7 @@ AsyncSessionLocal = sessionmaker(
     class_=AsyncSession,
     expire_on_commit=False
 )
+
 
 # Inicjalizacja bazy danych (opcjonalnie)
 async def init_db():
@@ -33,9 +33,9 @@ async def add_book_to_session(session, book_data):
         url=book_data.get('url'),
         country_code=book_data.get('country_code'),
         language_code=book_data.get('language_code'),
-        average_rating=float(book_data.get('average_rating', 0)),
+        average_rating=-1 if book_data.get('average_rating') == '' else float(book_data.get('average_rating')),
         description=book_data.get('description'),
-        work_id=int(book_data.get('work_id')),
+        work_id=-1 if book_data.get('work_id') == '' else int(book_data.get('work_id')),
         title=book_data.get('title'),
         title_without_series=book_data.get('title_without_series')
     )
@@ -53,9 +53,10 @@ async def add_book_to_session(session, book_data):
     #         # Handle the case where the string cannot be converted to an integer
     #         print(f"Warning: '{sb_id}' is not a valid integer for a similar_book_id.")
 
+
 async def main():
-    DIR = './Data'
-    await init_db()  # Wywołanie opcjonalne jeśli baza jest już zainicjowana
+    DIR = 'src/data'
+    await init_db()  # Wywołanie opcjonalne, jeśli baza jest już zainicjowana
     print("Adding books to the database...")
     async with AsyncSessionLocal() as session:
         with gzip.open(os.path.join(DIR, 'goodreads_books.json.gz')) as fin:
@@ -80,6 +81,7 @@ async def main():
                 await session.rollback()
             finally:
                 await session.close()
+
 
 # Uruchomienie asynchronicznego głównego procesu
 asyncio.run(main())
